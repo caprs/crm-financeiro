@@ -1,6 +1,17 @@
+# Node
 node_modules
+
+# Ambiente
 .env
+.env.local
+
+# Build
 dist
 build
-.DS_Store
+
+# Logs
 *.log
+
+# Sistema
+.DS_Store
+Thumbs.db
