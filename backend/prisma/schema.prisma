@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PerfilGlobal {
+  ADM
+  USUARIO
+}
+
+enum CargoEstabelecimento {
+  GERENTE
+  FUNCIONARIO
+}
+
+model Usuario {
+  id           String       @id @default(uuid())
+  nome         String
+  email        String       @unique
+  senha        String
+  perfil       PerfilGlobal @default(USUARIO)
+  ativo        Boolean      @default(true)
+  criadoEm     DateTime     @default(now())
+  atualizadoEm DateTime     @updatedAt
+
+  estabelecimentosCriados Estabelecimento[]       @relation("CriadorEstabelecimento")
+  vinculos                 UsuarioEstabelecimento[]
+}
+
+model Estabelecimento {
+  id           String   @id @default(uuid())
+  cnpj         String   @unique
+  razaoSocial  String
+  nomeFantasia String?
+  telefone     String?
+  email        String?
+  cep          String?
+  logradouro   String?
+  numero       String?
+  bairro       String?
+  cidade       String?
+  estado       String?
+  ativo        Boolean  @default(true)
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  criadoPorId String
+  criadoPor   Usuario @relation("CriadorEstabelecimento", fields: [criadoPorId], references: [id])
+
+  usuarios UsuarioEstabelecimento[]
+}
+
+model UsuarioEstabelecimento {
+  id                String               @id @default(uuid())
+  usuarioId         String
+  estabelecimentoId String
+  cargo             CargoEstabelecimento
+  criadoEm           DateTime             @default(now())
+
+  usuario         Usuario         @relation(fields: [usuarioId], references: [id])
+  estabelecimento Estabelecimento @relation(fields: [estabelecimentoId], references: [id])
+
+  @@unique([usuarioId, estabelecimentoId])
+}
