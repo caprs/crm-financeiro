@@ -1,5 +1,5 @@
 import prisma from "../../config/prisma.js";
-
+import bcrypt from "bcrypt";
 interface AtualizaUsuario{
     id: string;
     nome?: string;
@@ -32,9 +32,9 @@ export async function atualizaUsuarioHelper(data: AtualizaUsuario){
     dadosAtualizacao.email = data.email;
   }
 
-  if(data.senha !== undefined){
-    dadosAtualizacao.senha = data.senha;
-  }
+ if (data.senha !== undefined) {
+    dadosAtualizacao.senha = await bcrypt.hash(data.senha, 10);
+}
 
   const user = await prisma.usuario.update({
     where: {
