@@ -4,13 +4,18 @@ import {listarUsuarioIdController} from "../controllers/usuario/listarUsuarioIdC
 import {atualizaUsuarioController} from "../controllers/usuario/atualizaUsuarioController.js";
 import {criarUsuarioController} from "../controllers/usuario/criarUsuarioController.js";
 import {deletaUsuarioController} from "../controllers/usuario/deletaUsuarioController.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const rotasUsuario = Router();
+
+
+rotasUsuario.post("/", criarUsuarioController);
+
+rotasUsuario.use(authMiddleware);
 
 rotasUsuario.get("/", listarUsuarioController);
 rotasUsuario.get("/:id", listarUsuarioIdController);
 rotasUsuario.put("/:id", atualizaUsuarioController);
-rotasUsuario.post("/", criarUsuarioController);
 rotasUsuario.delete("/:id", deletaUsuarioController);
 
 export default rotasUsuario;
